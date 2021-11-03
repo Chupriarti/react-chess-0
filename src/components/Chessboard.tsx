@@ -10,7 +10,7 @@ export default function Chessboard(){
 
     for (let j = verticalAxis.length - 1; j >= 0; j--){
         for (let i = 0; i < horizontalAxis.length; i++){
-            board.push(<span>{horizontalAxis[i]}{verticalAxis[j]} </span>)
+            board.push(<span>[{horizontalAxis[i]}{verticalAxis[j]}]</span>)
         }
     }
 
