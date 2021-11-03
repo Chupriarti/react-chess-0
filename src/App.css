@@ -2,4 +2,10 @@
   display: grid;
   place-content: center;
   height: 100vh;
+  background-color: #202020;
+}
+
+* {
+  margin: 0;
+  padding: 0;
 }
