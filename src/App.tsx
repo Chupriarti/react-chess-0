@@ -1,10 +1,11 @@
 import React from 'react';
 import './App.css';
+import Chessboard from './components/Chessboard';
 
 function App() {
   return (
     <div className="App">
-      <p>React App</p>
+      <Chessboard />
     </div>
   );
 }
