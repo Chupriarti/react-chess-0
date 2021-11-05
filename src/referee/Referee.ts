@@ -8,6 +8,6 @@ export default class Referee {
         console.log(`Current location: (${x},${y})`);
         console.log(`Piece type: (${type})`);
         console.log(`Piece team: (${team})`);
-        return true;
+        return false;
     }
 }
