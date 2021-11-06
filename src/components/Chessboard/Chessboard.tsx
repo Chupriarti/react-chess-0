@@ -182,7 +182,7 @@ export default function Chessboard(){
                     pieces
                 );
                 const updatedPieces = pieces.reduce((results, piece) => {
-                    if (piece.x === currentPiece.x && piece.y === currentPiece.y){
+                    if (piece.x === gridX && piece.y === gridY){
                         results.push({
                             ...piece,
                             x, 
