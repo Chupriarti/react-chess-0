@@ -9,6 +9,12 @@ export default class Referee {
         return false;
     }
 
+    tileIsOccupiedByOpponent(x: number, y: number, boardState: Piece[], team: TeamType): boolean{
+        const piece = boardState.find(p => p.x === x && p.y === y && p.team !== team);
+        if (piece) return true
+        return false;
+    }
+
     isValidMove(px: number, py: number, x: number, y: number, type: PieceType, team: TeamType, boardState: Piece[]): boolean{
         console.log("Referee is checking the move...");
         console.log(`Previous location: (${px},${py})`);
@@ -28,6 +34,17 @@ export default class Referee {
                 if (!this.tileIsOccupied(x, y, boardState)){
                     return true;
                 }                 
+            }
+            else if (x - px === -1 && y - py === pawnDirection){
+                if (this.tileIsOccupiedByOpponent(x, y, boardState, team)){
+                    console.log("We can strike the enemy!");
+                    return true;
+                }
+            } else if (x - px === 1 && y - py === pawnDirection){
+                if (this.tileIsOccupiedByOpponent(x, y, boardState, team)){
+                    console.log("We can strike the enemy!")
+                    return true;
+                }
             }
         }
         return false;
