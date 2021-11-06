@@ -19,14 +19,17 @@ export default class Referee {
         if (type === PieceType.PAWN) {
             if (team === TeamType.OUR) {
                 if (py === 1){
-                    if (px === x && (y - py === 1 || y - py === 2)){
+                    if (px === x && y - py === 1){
                         if (!this.tileIsOccupied(x, y, boardState)){
                             return true;
                         }
-                        
+                    } else if (px === x && y - py === 2){
+                        if (!this.tileIsOccupied(x, y - 1, boardState)){
+                            return true;
+                        }                        
                     }
                 } else {
-                    if (px === x && (y - py === 1)){
+                    if (px === x && y - py === 1){
                         if (!this.tileIsOccupied(x, y, boardState)){
                             return true;
                         }
@@ -34,13 +37,17 @@ export default class Referee {
                 }
             } else {
                 if (py === 6){
-                    if (px === x && (y - py === -1 || y - py === -2)){
+                    if (px === x && y - py === -1){
                         if (!this.tileIsOccupied(x, y, boardState)){
+                            return true;
+                        }
+                    } else if (px === x && y - py === -2){
+                        if (!this.tileIsOccupied(x, y + 1, boardState)){
                             return true;
                         }
                     }
                 } else {
-                    if (px === x && (y - py === -1)){
+                    if (px === x && y - py === -1){
                         if (!this.tileIsOccupied(x, y, boardState)){
                             return true;
                         }
