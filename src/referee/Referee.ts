@@ -2,7 +2,6 @@ import { Piece, PieceType, TeamType } from "../Constans";
 
 export default class Referee {
     tileIsOccupied(x:number, y:number, boardState: Piece[]): boolean{
-        console.log("Checking if tile is occupied...");
         const piece = boardState.find(p => p.position.x === x && p.position.y === y);
         if (piece) return true;
         return false;
@@ -28,12 +27,6 @@ export default class Referee {
     }
 
     isValidMove(px: number, py: number, x: number, y: number, type: PieceType, team: TeamType, boardState: Piece[]): boolean{
-        console.log("Referee is checking the move...");
-        console.log(`Previous location: (${px},${py})`);
-        console.log(`Current location: (${x},${y})`);
-        console.log(`Piece type: (${type})`);
-        console.log(`Piece team: (${team})`);
-
         if (type === PieceType.PAWN){
             const specialRow = (team === TeamType.OUR) ? 1 : 6;
             const pawnDirection = (team === TeamType.OUR) ? 1 : -1;
@@ -49,12 +42,10 @@ export default class Referee {
             }
             else if (x - px === -1 && y - py === pawnDirection){
                 if (this.tileIsOccupiedByOpponent(x, y, boardState, team)){
-                    console.log("We can strike the enemy!");
                     return true;
                 }
             } else if (x - px === 1 && y - py === pawnDirection){
                 if (this.tileIsOccupiedByOpponent(x, y, boardState, team)){
-                    console.log("We can strike the enemy!")
                     return true;
                 }
             }
