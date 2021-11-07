@@ -2,12 +2,11 @@ import React from 'react';
 import Tile from '../Tile/Tile';
 import './Chessboard.css';
 import Referee from '../../referee/Referee';
-import { horizontalAxis, initialBoardState, Piece, PieceType, TeamType, verticalAxis } from '../../Constans';
+import { horizontalAxis, initialBoardState, Piece, PieceType, Position, TeamType, verticalAxis } from '../../Constans';
 
 export default function Chessboard(){
     const [activePiece, setActivePiece] = React.useState<HTMLElement | null>(null)
-    const [gridX, setGridX] = React.useState(0);
-    const [gridY, setGridY] = React.useState(0);
+    const [grabPosition, setGrabPosition] = React.useState<Position>({x: -1, y: -1});
     const [pieces, setPieces] = React.useState<Piece[]>(initialBoardState)
 
     const chessboardRef = React.useRef<HTMLDivElement>(null);
@@ -20,8 +19,7 @@ export default function Chessboard(){
         if (element.classList.contains("chess-piece") && chessboard){
             const gridX = Math.floor((e.clientX - chessboard.offsetLeft) / 100);
             const gridY = Math.abs(Math.ceil((e.clientY - chessboard.offsetTop - 800) / 100));
-            setGridX(gridX);
-            setGridY(gridY);
+            setGrabPosition({x: gridX, y:gridY});
             setActivePiece(element); 
         }
     }
@@ -60,23 +58,23 @@ export default function Chessboard(){
         if (activePiece && chessboard){
             const x = Math.floor((e.clientX - chessboard.offsetLeft) / 100);
             const y = Math.abs(Math.ceil((e.clientY - chessboard.offsetTop - 800) / 100));  
-            const currentPiece = pieces.find(p => p.position.x === gridX && p.position.y === gridY);
+            const currentPiece = pieces.find(p => p.position.x === grabPosition.x && p.position.y === grabPosition.y);
             const attackedPiece = pieces.find(p => p.position.x === x && p.position.y === y);
             if (currentPiece){
                 const isValidMove = referee.isValidMove(
-                    gridX,
-                    gridY, 
+                    grabPosition.x,
+                    grabPosition.y, 
                     x, 
                     y, 
                     currentPiece.type, 
                     currentPiece.team, 
                     pieces
                 );
-                const inEnPassantMove = referee.isEnPassantMove(gridX, gridY, x, y, currentPiece.type, currentPiece.team, pieces);
+                const inEnPassantMove = referee.isEnPassantMove(grabPosition.x, grabPosition.y, x, y, currentPiece.type, currentPiece.team, pieces);
                 const pawnDirection = currentPiece.team === TeamType.OUR ? 1 : -1;
                 if (inEnPassantMove){
                     const updatedPieces = pieces.reduce((results, piece) => {
-                        if (piece.position.x === gridX && piece.position.y === gridY){
+                        if (piece.position.x === grabPosition.x && piece.position.y === grabPosition.y){
                             piece.enPassant = false;
                             piece.position.x = x;
                             piece.position.y = y;
@@ -92,8 +90,8 @@ export default function Chessboard(){
                     setPieces(updatedPieces);
                 } else if (isValidMove){
                     const updatedPieces = pieces.reduce((results, piece) => {
-                        if (piece.position.x === gridX && piece.position.y === gridY){
-                            if (Math.abs(gridY - y) === 2 && piece.type === PieceType.PAWN){
+                        if (piece.position.x === grabPosition.x && piece.position.y === grabPosition.y){
+                            if (Math.abs(grabPosition.y - y) === 2 && piece.type === PieceType.PAWN){
                                 console.log("enPassant true")
                                 piece.enPassant = true;
                             } else {
