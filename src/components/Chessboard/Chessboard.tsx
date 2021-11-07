@@ -2,122 +2,11 @@ import React from 'react';
 import Tile from '../Tile/Tile';
 import './Chessboard.css';
 import Referee from '../../referee/Referee';
-
-const verticalAxis = ["1","2","3","4","5","6","7","8"];
-const horizontalAxis = ["a","b","c","d","e","f","g", "h"];
-
-export interface Piece {
-    image: string
-    x: number
-    y: number
-    type: PieceType
-    team: TeamType
-    enPassant?: boolean;
-}
-
-export enum TeamType {
-    OPPONENT,
-    OUR
-}
-
-export enum PieceType {
-    PAWN,
-    BISHOP,
-    KNIGHT,
-    ROOK,
-    QUEEN,
-    KING
-}
-
- const initialBoardState: Piece[] = [];
-
- for (let p = 0; p < 2; p++){
-    const teamType = (p === 0) ? TeamType.OPPONENT : TeamType.OUR;
-    const type = (teamType === TeamType.OPPONENT) ? "b" : "w";
-    const y = (teamType === TeamType.OPPONENT) ? 7 : 0;
-    
-    initialBoardState.push({
-        image: `assets/images/rook_${type}.png`, 
-        x: 0, 
-        y, 
-        type: PieceType.ROOK, 
-        team: teamType
-    })
-    initialBoardState.push({
-        image: `assets/images/rook_${type}.png`, 
-        x: 7, 
-        y, 
-        type: PieceType.ROOK, 
-        team: teamType
-    })
-    initialBoardState.push({
-        image: `assets/images/knight_${type}.png`, 
-        x: 1, 
-        y, 
-        type: PieceType.KNIGHT, 
-        team: teamType
-    })
-    initialBoardState.push({
-        image: `assets/images/knight_${type}.png`, 
-        x: 6, 
-        y, 
-        type: PieceType.KNIGHT, 
-        team: teamType
-    })
-    initialBoardState.push({
-        image: `assets/images/bishop_${type}.png`, 
-        x: 2, 
-        y, 
-        type: PieceType.BISHOP, 
-        team: teamType
-    })
-    initialBoardState.push({
-        image: `assets/images/bishop_${type}.png`, 
-        x: 5, 
-        y, 
-        type: PieceType.BISHOP, 
-        team: teamType
-    })
-    initialBoardState.push({
-        image: `assets/images/queen_${type}.png`, 
-        x: 3, 
-        y, 
-        type: PieceType.QUEEN, 
-        team: teamType
-    })
-    initialBoardState.push({
-        image: `assets/images/king_${type}.png`, 
-        x: 4, 
-        y, 
-        type: PieceType.KING, 
-        team: teamType
-    })
-}
-
-for (let i = 0; i < 8; i++){
-    initialBoardState.push({
-        image: "assets/images/pawn_b.png", 
-        x: i, 
-        y: 6, 
-        type: PieceType.PAWN, 
-        team: TeamType.OPPONENT
-    })
-}
-
-for (let i = 0; i < 8; i++){
-    initialBoardState.push({
-        image: "assets/images/pawn_w.png", 
-        x: i, 
-        y: 1, 
-        type: PieceType.PAWN, 
-        team: TeamType.OUR
-    })
-}
+import { HORIZONTAL_AXIS, initialBoardState, Piece, PieceType, Position, TeamType, VERTICAL_AXIS, GRID_SIZE, samePosition } from '../../Constans';
 
 export default function Chessboard(){
     const [activePiece, setActivePiece] = React.useState<HTMLElement | null>(null)
-    const [gridX, setGridX] = React.useState(0);
-    const [gridY, setGridY] = React.useState(0);
+    const [grabPosition, setGrabPosition] = React.useState<Position>({x: -1, y: -1});
     const [pieces, setPieces] = React.useState<Piece[]>(initialBoardState)
 
     const chessboardRef = React.useRef<HTMLDivElement>(null);
@@ -128,10 +17,9 @@ export default function Chessboard(){
         const chessboard = chessboardRef.current;
         const element = e.target as HTMLElement;
         if (element.classList.contains("chess-piece") && chessboard){
-            const gridX = Math.floor((e.clientX - chessboard.offsetLeft) / 100);
-            const gridY = Math.abs(Math.ceil((e.clientY - chessboard.offsetTop - 800) / 100));
-            setGridX(gridX);
-            setGridY(gridY);
+            const gridX = Math.floor((e.clientX - chessboard.offsetLeft) / GRID_SIZE);
+            const gridY = Math.abs(Math.ceil((e.clientY - chessboard.offsetTop - 800) / GRID_SIZE));
+            setGrabPosition({x: gridX, y:gridY});
             setActivePiece(element); 
         }
     }
@@ -143,8 +31,8 @@ export default function Chessboard(){
             const minY = chessboard.offsetTop - 25;
             const maxX = chessboard.offsetLeft + chessboard.clientWidth - 75;
             const maxY = chessboard.offsetTop + chessboard.clientHeight - 75;
-            const x = e.clientX - 50;
-            const y = e.clientY - 50;
+            const x = e.clientX - GRID_SIZE / 2;
+            const y = e.clientY - GRID_SIZE / 2;
             activePiece.style.position = "absolute";
 
             if (x < minX) {
@@ -168,30 +56,33 @@ export default function Chessboard(){
     function dropPiece (e: React.MouseEvent){
         const chessboard = chessboardRef.current;
         if (activePiece && chessboard){
-            const x = Math.floor((e.clientX - chessboard.offsetLeft) / 100);
-            const y = Math.abs(Math.ceil((e.clientY - chessboard.offsetTop - 800) / 100));  
-            const currentPiece = pieces.find(p => p.x === gridX && p.y === gridY);
-            const attackedPiece = pieces.find(p => p.x === x && p.y === y);
+            const x = Math.floor((e.clientX - chessboard.offsetLeft) / GRID_SIZE);
+            const y = Math.abs(Math.ceil((e.clientY - chessboard.offsetTop - 800) / GRID_SIZE));  
+            const currentPiece = pieces.find(p => samePosition(p.position, grabPosition));
             if (currentPiece){
                 const isValidMove = referee.isValidMove(
-                    gridX,
-                    gridY, 
-                    x, 
-                    y, 
+                    grabPosition,
+                    {x, y},
                     currentPiece.type, 
                     currentPiece.team, 
                     pieces
                 );
-                const inEnPassantMove = referee.isEnPassantMove(gridX, gridY, x, y, currentPiece.type, currentPiece.team, pieces);
+                const inEnPassantMove = referee.isEnPassantMove(
+                    grabPosition,
+                    {x, y},
+                    currentPiece.type, 
+                    currentPiece.team, 
+                    pieces
+                );
                 const pawnDirection = currentPiece.team === TeamType.OUR ? 1 : -1;
                 if (inEnPassantMove){
                     const updatedPieces = pieces.reduce((results, piece) => {
-                        if (piece.x === gridX && piece.y === gridY){
+                        if (samePosition(piece.position, grabPosition)){
                             piece.enPassant = false;
-                            piece.x = x;
-                            piece.y = y;
+                            piece.position.x = x;
+                            piece.position.y = y;
                             results.push(piece);
-                        } else if (!(piece.x === x && piece.y === y - pawnDirection)){
+                        } else if (!(samePosition(piece.position, {x, y: y - pawnDirection}))){
                             if (piece.type === PieceType.PAWN){
                                 piece.enPassant = false;
                             }
@@ -202,17 +93,12 @@ export default function Chessboard(){
                     setPieces(updatedPieces);
                 } else if (isValidMove){
                     const updatedPieces = pieces.reduce((results, piece) => {
-                        if (piece.x === gridX && piece.y === gridY){
-                            if (Math.abs(gridY - y) === 2 && piece.type === PieceType.PAWN){
-                                console.log("enPassant true")
-                                piece.enPassant = true;
-                            } else {
-                                piece.enPassant = false;
-                            }
-                            piece.x = x;
-                            piece.y = y;
+                        if (samePosition(piece.position, grabPosition)){
+                            piece.enPassant = Math.abs(grabPosition.y - y) === 2 && piece.type === PieceType.PAWN;
+                            piece.position.x = x;
+                            piece.position.y = y;
                             results.push(piece);
-                        } else if (!(piece.x === x && piece.y === y)){
+                        } else if (!(samePosition(piece.position, {x, y}))){
                             if (piece.type === PieceType.PAWN){
                                 piece.enPassant = false;
                             }
@@ -233,15 +119,11 @@ export default function Chessboard(){
 
     let board = [];
 
-    for (let j = verticalAxis.length - 1; j >= 0; j--){
-        for (let i = 0; i < horizontalAxis.length; i++){
-            let number = j + i + 2;
-            let image = undefined;
-            pieces.forEach(p => {
-                if (p.x === i && p.y === j){
-                    image = p.image;
-                }
-            })
+    for (let j = VERTICAL_AXIS.length - 1; j >= 0; j--){
+        for (let i = 0; i < HORIZONTAL_AXIS.length; i++){
+            const number = j + i + 2;
+            const piece = pieces.find(p => samePosition(p.position, {x: i,y: j}));
+            let image = piece ? piece.image : undefined;
             board.push(<Tile key={`${j},${i}`} number={number} image={image} />)
         }
     }

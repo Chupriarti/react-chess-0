@@ -1,25 +1,29 @@
-import { Piece, PieceType } from "../components/Chessboard/Chessboard";
-import { TeamType } from "../components/Chessboard/Chessboard";
+import { Piece, PieceType, Position, TeamType } from "../Constans";
 
 export default class Referee {
     tileIsOccupied(x:number, y:number, boardState: Piece[]): boolean{
-        console.log("Checking if tile is occupied...");
-        const piece = boardState.find(p => p.x === x && p.y === y);
+        const piece = boardState.find(p => p.position.x === x && p.position.y === y);
         if (piece) return true;
         return false;
     }
 
     tileIsOccupiedByOpponent(x: number, y: number, boardState: Piece[], team: TeamType): boolean{
-        const piece = boardState.find(p => p.x === x && p.y === y && p.team !== team);
+        const piece = boardState.find(p => p.position.x === x && p.position.y === y && p.team !== team);
         if (piece) return true
         return false;
     }
 
-    isEnPassantMove(px: number, py: number, x: number, y: number, type: PieceType, team: TeamType, boardState: Piece[]){
+    isEnPassantMove(
+        initialPosition: Position,
+        desiredPosition: Position,
+        type: PieceType, 
+        team: TeamType, 
+        boardState: Piece[]
+    ){
         const pawnDirection = team === TeamType.OUR ? 1 : -1;
         if (type === PieceType.PAWN){
-            if ((x - px === -1 || x - px === 1) && y - py === pawnDirection){
-                const piece = boardState.find(p => p.x === x && p.y === y - pawnDirection && p.enPassant);
+            if ((desiredPosition.x - initialPosition.x === -1 || desiredPosition.x - initialPosition.x === 1) && desiredPosition.y - initialPosition.y === pawnDirection){
+                const piece = boardState.find(p => p.position.x === desiredPosition.x && p.position.y === desiredPosition.y - pawnDirection && p.enPassant);
                 if (piece){
                     return true;
                 }
@@ -28,34 +32,32 @@ export default class Referee {
         return false;
     }
 
-    isValidMove(px: number, py: number, x: number, y: number, type: PieceType, team: TeamType, boardState: Piece[]): boolean{
-        console.log("Referee is checking the move...");
-        console.log(`Previous location: (${px},${py})`);
-        console.log(`Current location: (${x},${y})`);
-        console.log(`Piece type: (${type})`);
-        console.log(`Piece team: (${team})`);
-
+    isValidMove(
+        initialPosition: Position,
+        desiredPosition: Position,
+        type: PieceType, 
+        team: TeamType, 
+        boardState: Piece[]
+    ): boolean{
         if (type === PieceType.PAWN){
             const specialRow = (team === TeamType.OUR) ? 1 : 6;
             const pawnDirection = (team === TeamType.OUR) ? 1 : -1;
 
-            if (px === x && py === specialRow && y - py === 2 * pawnDirection){
-                if (!this.tileIsOccupied(x, y, boardState) && !this.tileIsOccupied(x, y - pawnDirection, boardState)){
+            if (initialPosition.x === desiredPosition.x && initialPosition.y === specialRow && desiredPosition.y - initialPosition.y === 2 * pawnDirection){
+                if (!this.tileIsOccupied(desiredPosition.x, desiredPosition.y, boardState) && !this.tileIsOccupied(desiredPosition.x, desiredPosition.y - pawnDirection, boardState)){
                     return true;
                 } 
-            } else if (px === x && y - py === pawnDirection) {
-                if (!this.tileIsOccupied(x, y, boardState)){
+            } else if (initialPosition.x === desiredPosition.x && desiredPosition.y - initialPosition.y === pawnDirection) {
+                if (!this.tileIsOccupied(desiredPosition.x, desiredPosition.y, boardState)){
                     return true;
                 }                 
             }
-            else if (x - px === -1 && y - py === pawnDirection){
-                if (this.tileIsOccupiedByOpponent(x, y, boardState, team)){
-                    console.log("We can strike the enemy!");
+            else if (desiredPosition.x -initialPosition.x === -1 && desiredPosition.y - initialPosition.y === pawnDirection){
+                if (this.tileIsOccupiedByOpponent(desiredPosition.x, desiredPosition.y, boardState, team)){
                     return true;
                 }
-            } else if (x - px === 1 && y - py === pawnDirection){
-                if (this.tileIsOccupiedByOpponent(x, y, boardState, team)){
-                    console.log("We can strike the enemy!")
+            } else if (desiredPosition.x - initialPosition.x === 1 && desiredPosition.y - initialPosition.y === pawnDirection){
+                if (this.tileIsOccupiedByOpponent(desiredPosition.x, desiredPosition.y, boardState, team)){
                     return true;
                 }
             }
