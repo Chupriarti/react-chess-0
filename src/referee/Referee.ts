@@ -1,5 +1,4 @@
-import { Piece, PieceType } from "../components/Chessboard/Chessboard";
-import { TeamType } from "../components/Chessboard/Chessboard";
+import { Piece, PieceType, TeamType } from "../Constans";
 
 export default class Referee {
     tileIsOccupied(x:number, y:number, boardState: Piece[]): boolean{
