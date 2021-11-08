@@ -13,6 +13,10 @@ export default class Referee {
         return false;
     }
 
+    tileIsEmptyOrOccupiedByEnemy (desiredPosition: Position, boardState: Piece[], team: TeamType): boolean {
+        return this.tileIsOccupiedByOpponent(desiredPosition, boardState, team) || !this.tileIsOccupied(desiredPosition, boardState);
+    }
+
     isEnPassantMove(
         initialPosition: Position,
         desiredPosition: Position,
@@ -64,8 +68,7 @@ export default class Referee {
         } else if (type === PieceType.KNIGHT){
             if ((Math.abs(desiredPosition.x - initialPosition.x) === 2 && Math.abs(desiredPosition.y - initialPosition.y) === 1) 
                 || (Math.abs(desiredPosition.x - initialPosition.x) === 1 && Math.abs(desiredPosition.y - initialPosition.y) === 2)){
-                    if (this.tileIsOccupiedByOpponent(desiredPosition, boardState, team)) return true;
-                    if (!this.tileIsOccupied(desiredPosition, boardState)) return true;
+                    if (this.tileIsEmptyOrOccupiedByEnemy(desiredPosition, boardState, team)) return true;
             }
         }
         return false;
