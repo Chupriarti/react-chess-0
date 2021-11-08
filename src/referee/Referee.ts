@@ -70,6 +70,8 @@ export default class Referee {
                 || (Math.abs(desiredPosition.x - initialPosition.x) === 1 && Math.abs(desiredPosition.y - initialPosition.y) === 2)){
                     if (this.tileIsEmptyOrOccupiedByEnemy(desiredPosition, boardState, team)) return true;
             }
+        } else if (type === PieceType.BISHOP){
+            return true;
         }
         return false;
     }
