@@ -62,7 +62,10 @@ export default class Referee {
                 }
             }
         } else if (type === PieceType.KNIGHT){
-            return true;
+            if ((Math.abs(desiredPosition.x - initialPosition.x) === 2 && Math.abs(desiredPosition.y - initialPosition.y) === 1) 
+                || (Math.abs(desiredPosition.x - initialPosition.x) === 1 && Math.abs(desiredPosition.y - initialPosition.y) === 2)){
+                return true;
+            }
         }
         return false;
     }
