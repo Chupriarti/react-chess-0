@@ -61,6 +61,8 @@ export default class Referee {
                     return true;
                 }
             }
+        } else if (type === PieceType.KNIGHT){
+            return true;
         }
         return false;
     }
