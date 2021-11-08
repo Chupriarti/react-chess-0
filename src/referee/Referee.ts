@@ -1,14 +1,14 @@
-import { Piece, PieceType, Position, TeamType } from "../Constans";
+import { Piece, PieceType, Position, samePosition, TeamType } from "../Constans";
 
 export default class Referee {
-    tileIsOccupied(x:number, y:number, boardState: Piece[]): boolean{
-        const piece = boardState.find(p => p.position.x === x && p.position.y === y);
+    tileIsOccupied(desiredPosition: Position, boardState: Piece[]): boolean{
+        const piece = boardState.find(p => samePosition(p.position, desiredPosition));
         if (piece) return true;
         return false;
     }
 
-    tileIsOccupiedByOpponent(x: number, y: number, boardState: Piece[], team: TeamType): boolean{
-        const piece = boardState.find(p => p.position.x === x && p.position.y === y && p.team !== team);
+    tileIsOccupiedByOpponent(desiredPosition: Position, boardState: Piece[], team: TeamType): boolean{
+        const piece = boardState.find(p => samePosition(p.position, desiredPosition) && p.team !== team);
         if (piece) return true
         return false;
     }
@@ -44,28 +44,28 @@ export default class Referee {
             const pawnDirection = (team === TeamType.OUR) ? 1 : -1;
 
             if (initialPosition.x === desiredPosition.x && initialPosition.y === specialRow && desiredPosition.y - initialPosition.y === 2 * pawnDirection){
-                if (!this.tileIsOccupied(desiredPosition.x, desiredPosition.y, boardState) && !this.tileIsOccupied(desiredPosition.x, desiredPosition.y - pawnDirection, boardState)){
+                if (!this.tileIsOccupied(desiredPosition, boardState) && !this.tileIsOccupied({x: desiredPosition.x, y: desiredPosition.y - pawnDirection}, boardState)){
                     return true;
                 } 
             } else if (initialPosition.x === desiredPosition.x && desiredPosition.y - initialPosition.y === pawnDirection) {
-                if (!this.tileIsOccupied(desiredPosition.x, desiredPosition.y, boardState)){
+                if (!this.tileIsOccupied(desiredPosition, boardState)){
                     return true;
                 }                 
             }
             else if (desiredPosition.x -initialPosition.x === -1 && desiredPosition.y - initialPosition.y === pawnDirection){
-                if (this.tileIsOccupiedByOpponent(desiredPosition.x, desiredPosition.y, boardState, team)){
+                if (this.tileIsOccupiedByOpponent(desiredPosition, boardState, team)){
                     return true;
                 }
             } else if (desiredPosition.x - initialPosition.x === 1 && desiredPosition.y - initialPosition.y === pawnDirection){
-                if (this.tileIsOccupiedByOpponent(desiredPosition.x, desiredPosition.y, boardState, team)){
+                if (this.tileIsOccupiedByOpponent(desiredPosition, boardState, team)){
                     return true;
                 }
             }
         } else if (type === PieceType.KNIGHT){
             if ((Math.abs(desiredPosition.x - initialPosition.x) === 2 && Math.abs(desiredPosition.y - initialPosition.y) === 1) 
                 || (Math.abs(desiredPosition.x - initialPosition.x) === 1 && Math.abs(desiredPosition.y - initialPosition.y) === 2)){
-                    if (this.tileIsOccupiedByOpponent(desiredPosition.x, desiredPosition.y, boardState, team)) return true;
-                    if (!this.tileIsOccupied(desiredPosition.x, desiredPosition.y, boardState)) return true;
+                    if (this.tileIsOccupiedByOpponent(desiredPosition, boardState, team)) return true;
+                    if (!this.tileIsOccupied(desiredPosition, boardState)) return true;
             }
         }
         return false;
