@@ -71,7 +71,7 @@ export default class Referee {
                     if (this.tileIsEmptyOrOccupiedByEnemy(desiredPosition, boardState, team)) return true;
             }
         } else if (type === PieceType.BISHOP){
-            return true;
+            if (Math.abs(desiredPosition.x - initialPosition.x) === Math.abs(desiredPosition.y - initialPosition.y)) return true;
         }
         return false;
     }
