@@ -79,7 +79,7 @@ export default class Referee {
                     if (this.tileIsOccupied(passedPosition, boardState)) {
                         break;
                     }
-                    if (desiredPosition.x - initialPosition.x === i && desiredPosition.y - initialPosition.y === i){
+                    if (samePosition(desiredPosition, passedPosition)){
                         return true;
                     }    
                 }
@@ -90,7 +90,7 @@ export default class Referee {
                     if (this.tileIsOccupied(passedPosition, boardState)) {
                         break;
                     }
-                    if (desiredPosition.x - initialPosition.x === -i && desiredPosition.y - initialPosition.y === i){
+                    if (samePosition(desiredPosition, passedPosition)){
                         return true;
                     } 
                 }
@@ -101,7 +101,7 @@ export default class Referee {
                     if (this.tileIsOccupied(passedPosition, boardState)) {
                         break;
                     }
-                    if (desiredPosition.x - initialPosition.x === i && desiredPosition.y - initialPosition.y === -i){
+                    if (samePosition(desiredPosition, passedPosition)){
                         return true;
                     }   
                 }   
@@ -112,10 +112,10 @@ export default class Referee {
                     if (this.tileIsOccupied(passedPosition, boardState)) {
                         break;
                     }
+                    if (samePosition(desiredPosition, passedPosition)){
+                        return true;
+                    }  
                 }
-                if (desiredPosition.x - initialPosition.x === -i && desiredPosition.y - initialPosition.y === -i){
-                    return true;
-                }  
             }
         }
         return false;
