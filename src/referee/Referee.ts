@@ -70,6 +70,27 @@ export default class Referee {
                 || (Math.abs(desiredPosition.x - initialPosition.x) === 1 && Math.abs(desiredPosition.y - initialPosition.y) === 2)){
                     if (this.tileIsEmptyOrOccupiedByEnemy(desiredPosition, boardState, team)) return true;
             }
+        } else if (type === PieceType.BISHOP){
+            for (let i = 0; i < 8; i++){
+                if (desiredPosition.x - initialPosition.x === i && desiredPosition.y - initialPosition.y === i){
+                    return true;
+                }               
+            }
+            for (let i = 0; i < 8; i++){
+                if (desiredPosition.x - initialPosition.x === -i && desiredPosition.y - initialPosition.y === i){
+                    return true;
+                }               
+            }
+            for (let i = 0; i < 8; i++){
+                if (desiredPosition.x - initialPosition.x === i && desiredPosition.y - initialPosition.y === -i){
+                    return true;
+                }               
+            }
+            for (let i = 0; i < 8; i++){
+                if (desiredPosition.x - initialPosition.x === -i && desiredPosition.y - initialPosition.y === -i){
+                    return true;
+                }               
+            }
         }
         return false;
     }
