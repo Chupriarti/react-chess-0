@@ -76,6 +76,21 @@ export default class Referee {
                     return true;
                 }               
             }
+            for (let i = 0; i < 8; i++){
+                if (desiredPosition.x - initialPosition.x === -i && desiredPosition.y - initialPosition.y === i){
+                    return true;
+                }               
+            }
+            for (let i = 0; i < 8; i++){
+                if (desiredPosition.x - initialPosition.x === i && desiredPosition.y - initialPosition.y === -i){
+                    return true;
+                }               
+            }
+            for (let i = 0; i < 8; i++){
+                if (desiredPosition.x - initialPosition.x === -i && desiredPosition.y - initialPosition.y === -i){
+                    return true;
+                }               
+            }
         }
         return false;
     }
