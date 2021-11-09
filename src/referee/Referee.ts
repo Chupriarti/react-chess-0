@@ -3,6 +3,7 @@ import { Piece, PieceType, Position, samePosition, TeamType } from "../Constans"
 export default class Referee {
     tileIsOccupied(desiredPosition: Position, boardState: Piece[]): boolean{
         const piece = boardState.find(p => samePosition(p.position, desiredPosition));
+        console.log("tileIsOccupied piece", piece)
         if (piece) return true;
         return false;
     }
@@ -71,7 +72,14 @@ export default class Referee {
                     if (this.tileIsEmptyOrOccupiedByEnemy(desiredPosition, boardState, team)) return true;
             }
         } else if (type === PieceType.BISHOP){
-            for (let i = 0; i < 8; i++){
+            for (let i = 1; i < 8; i++){
+
+                if (desiredPosition.x > initialPosition.x &&  desiredPosition.y > initialPosition.y){
+                    let passedPosition: Position = {x: initialPosition.x + i, y: initialPosition.y + i};
+                    if (this.tileIsOccupied(passedPosition, boardState)) {
+                        break;
+                    }
+                }
                 if (desiredPosition.x - initialPosition.x === i && desiredPosition.y - initialPosition.y === i){
                     return true;
                 }    
