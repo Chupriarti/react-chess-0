@@ -77,7 +77,11 @@ export default class Referee {
                 if (desiredPosition.x > initialPosition.x &&  desiredPosition.y > initialPosition.y){
                     let passedPosition: Position = {x: initialPosition.x + i, y: initialPosition.y + i};
                     if (this.tileIsOccupied(passedPosition, boardState)) {
-                        break;
+                        if (this.tileIsOccupiedByOpponent(passedPosition, boardState, team) && samePosition(desiredPosition, passedPosition)){
+                            return true
+                        } else {
+                            break;
+                        }
                     }
                     if (samePosition(desiredPosition, passedPosition)){
                         return true;
