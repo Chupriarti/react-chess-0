@@ -73,46 +73,54 @@ export default class Referee {
             }
         } else if (type === PieceType.BISHOP){
             for (let i = 1; i < 8; i++){
-
                 if (desiredPosition.x > initialPosition.x &&  desiredPosition.y > initialPosition.y){
                     let passedPosition: Position = {x: initialPosition.x + i, y: initialPosition.y + i};
-                    if (this.tileIsOccupied(passedPosition, boardState)) {
-                        break;
+                    if (samePosition(desiredPosition, passedPosition)){
+                        if (this.tileIsEmptyOrOccupiedByEnemy(passedPosition, boardState, team)){
+                            return true
+                        }                       
+                    } else {
+                        if (this.tileIsOccupied(passedPosition, boardState)){
+                            break;
+                        }
                     }
                 }
-                if (desiredPosition.x - initialPosition.x === i && desiredPosition.y - initialPosition.y === i){
-                    return true;
-                }    
-
                 if (desiredPosition.x < initialPosition.x &&  desiredPosition.y > initialPosition.y){
                     let passedPosition: Position = {x: initialPosition.x - i, y: initialPosition.y + i};
-                    if (this.tileIsOccupied(passedPosition, boardState)) {
-                        break;
+                    if (samePosition(desiredPosition, passedPosition)){
+                        if (this.tileIsEmptyOrOccupiedByEnemy(passedPosition, boardState, team)){
+                            return true
+                        }                       
+                    } else {
+                        if (this.tileIsOccupied(passedPosition, boardState)){
+                            break;
+                        }
                     }
                 }
-                if (desiredPosition.x - initialPosition.x === -i && desiredPosition.y - initialPosition.y === i){
-                    return true;
-                }   
-
                 if (desiredPosition.x > initialPosition.x &&  desiredPosition.y < initialPosition.y){
                     let passedPosition: Position = {x: initialPosition.x + i, y: initialPosition.y - i};
-                    if (this.tileIsOccupied(passedPosition, boardState)) {
-                        break;
-                    }
+                    if (samePosition(desiredPosition, passedPosition)){
+                        if (this.tileIsEmptyOrOccupiedByEnemy(passedPosition, boardState, team)){
+                            return true
+                        }                       
+                    } else {
+                        if (this.tileIsOccupied(passedPosition, boardState)){
+                            break;
+                        }
+                    }  
                 }   
-                if (desiredPosition.x - initialPosition.x === i && desiredPosition.y - initialPosition.y === -i){
-                    return true;
-                }     
-
                 if (desiredPosition.x < initialPosition.x &&  desiredPosition.y < initialPosition.y){
                     let passedPosition: Position = {x: initialPosition.x - i, y: initialPosition.y - i};
-                    if (this.tileIsOccupied(passedPosition, boardState)) {
-                        break;
+                    if (samePosition(desiredPosition, passedPosition)){
+                        if (this.tileIsEmptyOrOccupiedByEnemy(passedPosition, boardState, team)){
+                            return true
+                        }                       
+                    } else {
+                        if (this.tileIsOccupied(passedPosition, boardState)){
+                            break;
+                        }
                     }
                 }
-                if (desiredPosition.x - initialPosition.x === -i && desiredPosition.y - initialPosition.y === -i){
-                    return true;
-                }       
             }
         }
         return false;
