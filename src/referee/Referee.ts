@@ -83,12 +83,33 @@ export default class Referee {
                 if (desiredPosition.x - initialPosition.x === i && desiredPosition.y - initialPosition.y === i){
                     return true;
                 }    
+
+                if (desiredPosition.x < initialPosition.x &&  desiredPosition.y > initialPosition.y){
+                    let passedPosition: Position = {x: initialPosition.x - i, y: initialPosition.y + i};
+                    if (this.tileIsOccupied(passedPosition, boardState)) {
+                        break;
+                    }
+                }
                 if (desiredPosition.x - initialPosition.x === -i && desiredPosition.y - initialPosition.y === i){
                     return true;
-                }       
+                }   
+
+                if (desiredPosition.x > initialPosition.x &&  desiredPosition.y < initialPosition.y){
+                    let passedPosition: Position = {x: initialPosition.x + i, y: initialPosition.y - i};
+                    if (this.tileIsOccupied(passedPosition, boardState)) {
+                        break;
+                    }
+                }   
                 if (desiredPosition.x - initialPosition.x === i && desiredPosition.y - initialPosition.y === -i){
                     return true;
-                }      
+                }     
+
+                if (desiredPosition.x < initialPosition.x &&  desiredPosition.y < initialPosition.y){
+                    let passedPosition: Position = {x: initialPosition.x - i, y: initialPosition.y - i};
+                    if (this.tileIsOccupied(passedPosition, boardState)) {
+                        break;
+                    }
+                }
                 if (desiredPosition.x - initialPosition.x === -i && desiredPosition.y - initialPosition.y === -i){
                     return true;
                 }       
