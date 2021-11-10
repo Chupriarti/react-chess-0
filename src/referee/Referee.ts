@@ -72,6 +72,60 @@ export default class Referee {
         return false;
     }
 
+    bishopMove (initialPosition: Position, desiredPosition: Position, team: TeamType, boardState: Piece[]): boolean{
+        for (let i = 1; i < 8; i++){
+            if (desiredPosition.x > initialPosition.x &&  desiredPosition.y > initialPosition.y){
+                let passedPosition: Position = {x: initialPosition.x + i, y: initialPosition.y + i};
+                if (samePosition(desiredPosition, passedPosition)){
+                    if (this.tileIsEmptyOrOccupiedByEnemy(passedPosition, boardState, team)){
+                        return true;
+                    }                       
+                } else {
+                    if (this.tileIsOccupied(passedPosition, boardState)){
+                        break;
+                    }
+                }
+            }
+            if (desiredPosition.x < initialPosition.x &&  desiredPosition.y > initialPosition.y){
+                let passedPosition: Position = {x: initialPosition.x - i, y: initialPosition.y + i};
+                if (samePosition(desiredPosition, passedPosition)){
+                    if (this.tileIsEmptyOrOccupiedByEnemy(passedPosition, boardState, team)){
+                        return true;
+                    }                       
+                } else {
+                    if (this.tileIsOccupied(passedPosition, boardState)){
+                        break;
+                    }
+                }
+            }
+            if (desiredPosition.x > initialPosition.x &&  desiredPosition.y < initialPosition.y){
+                let passedPosition: Position = {x: initialPosition.x + i, y: initialPosition.y - i};
+                if (samePosition(desiredPosition, passedPosition)){
+                    if (this.tileIsEmptyOrOccupiedByEnemy(passedPosition, boardState, team)){
+                        return true;
+                    }                       
+                } else {
+                    if (this.tileIsOccupied(passedPosition, boardState)){
+                        break;
+                    }
+                }  
+            }   
+            if (desiredPosition.x < initialPosition.x &&  desiredPosition.y < initialPosition.y){
+                let passedPosition: Position = {x: initialPosition.x - i, y: initialPosition.y - i};
+                if (samePosition(desiredPosition, passedPosition)){
+                    if (this.tileIsEmptyOrOccupiedByEnemy(passedPosition, boardState, team)){
+                        return true;
+                    }                       
+                } else {
+                    if (this.tileIsOccupied(passedPosition, boardState)){
+                        break;
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
     isValidMove(
         initialPosition: Position,
         desiredPosition: Position,
@@ -88,56 +142,7 @@ export default class Referee {
                 validMove = this.knightMove(initialPosition, desiredPosition, team, boardState);
                 break;
             case PieceType.BISHOP:
-                for (let i = 1; i < 8; i++){
-                    if (desiredPosition.x > initialPosition.x &&  desiredPosition.y > initialPosition.y){
-                        let passedPosition: Position = {x: initialPosition.x + i, y: initialPosition.y + i};
-                        if (samePosition(desiredPosition, passedPosition)){
-                            if (this.tileIsEmptyOrOccupiedByEnemy(passedPosition, boardState, team)){
-                                validMove = true
-                            }                       
-                        } else {
-                            if (this.tileIsOccupied(passedPosition, boardState)){
-                                break;
-                            }
-                        }
-                    }
-                    if (desiredPosition.x < initialPosition.x &&  desiredPosition.y > initialPosition.y){
-                        let passedPosition: Position = {x: initialPosition.x - i, y: initialPosition.y + i};
-                        if (samePosition(desiredPosition, passedPosition)){
-                            if (this.tileIsEmptyOrOccupiedByEnemy(passedPosition, boardState, team)){
-                                validMove = true
-                            }                       
-                        } else {
-                            if (this.tileIsOccupied(passedPosition, boardState)){
-                                break;
-                            }
-                        }
-                    }
-                    if (desiredPosition.x > initialPosition.x &&  desiredPosition.y < initialPosition.y){
-                        let passedPosition: Position = {x: initialPosition.x + i, y: initialPosition.y - i};
-                        if (samePosition(desiredPosition, passedPosition)){
-                            if (this.tileIsEmptyOrOccupiedByEnemy(passedPosition, boardState, team)){
-                                validMove = true
-                            }                       
-                        } else {
-                            if (this.tileIsOccupied(passedPosition, boardState)){
-                                break;
-                            }
-                        }  
-                    }   
-                    if (desiredPosition.x < initialPosition.x &&  desiredPosition.y < initialPosition.y){
-                        let passedPosition: Position = {x: initialPosition.x - i, y: initialPosition.y - i};
-                        if (samePosition(desiredPosition, passedPosition)){
-                            if (this.tileIsEmptyOrOccupiedByEnemy(passedPosition, boardState, team)){
-                                validMove = true
-                            }                       
-                        } else {
-                            if (this.tileIsOccupied(passedPosition, boardState)){
-                                break;
-                            }
-                        }
-                    }
-                }
+                validMove = this.bishopMove(initialPosition, desiredPosition, team, boardState);
                 break;
             case PieceType.ROOK:
                 if (initialPosition.x === desiredPosition.x){
