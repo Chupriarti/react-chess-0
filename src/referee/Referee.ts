@@ -122,6 +122,8 @@ export default class Referee {
                     }
                 }
             }
+        } else if (type === PieceType.ROOK){
+            return true;
         }
         return false;
     }
