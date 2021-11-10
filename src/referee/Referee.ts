@@ -124,7 +124,20 @@ export default class Referee {
             }
         } else if (type === PieceType.ROOK){
             if (initialPosition.x === desiredPosition.x){
-                return true;
+                if (desiredPosition.y < initialPosition.y){
+                    for (let i = 1; i < 8; i++){
+                        let passedPosition: Position = {x: initialPosition.x, y: initialPosition.y - i};
+                        if (samePosition(desiredPosition, passedPosition)){
+                            if (this.tileIsEmptyOrOccupiedByEnemy(passedPosition, boardState, team)){
+                                return true
+                            }                       
+                        } else {
+                            if (this.tileIsOccupied(passedPosition, boardState)){
+                                break;
+                            }
+                        }  
+                    }
+                }
             } else if (initialPosition.y === desiredPosition.y){
                 return true;
             }
