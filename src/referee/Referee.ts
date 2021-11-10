@@ -123,7 +123,11 @@ export default class Referee {
                 }
             }
         } else if (type === PieceType.ROOK){
-            return true;
+            if (initialPosition.x === desiredPosition.x){
+                return true;
+            } else if (initialPosition.y === desiredPosition.y){
+                return true;
+            }
         }
         return false;
     }
