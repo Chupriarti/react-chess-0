@@ -124,61 +124,33 @@ export default class Referee {
             }
         } else if (type === PieceType.ROOK){
             if (initialPosition.x === desiredPosition.x){
-                if (desiredPosition.y < initialPosition.y){
-                    for (let i = 1; i < 8; i++){
-                        let passedPosition: Position = {x: initialPosition.x, y: initialPosition.y - i};
-                        if (samePosition(desiredPosition, passedPosition)){
-                            if (this.tileIsEmptyOrOccupiedByEnemy(passedPosition, boardState, team)){
-                                return true
-                            }                       
-                        } else {
-                            if (this.tileIsOccupied(passedPosition, boardState)){
-                                break;
-                            }
-                        }  
-                    }
-                } else if (desiredPosition.y > initialPosition.y){
-                    for (let i = 1; i < 8; i++){
-                        let passedPosition: Position = {x: initialPosition.x, y: initialPosition.y + i};
-                        if (samePosition(desiredPosition, passedPosition)){
-                            if (this.tileIsEmptyOrOccupiedByEnemy(passedPosition, boardState, team)){
-                                return true
-                            }                       
-                        } else {
-                            if (this.tileIsOccupied(passedPosition, boardState)){
-                                break;
-                            }
-                        }  
-                    }
-                } 
+                for (let i = 1; i < 8; i++){
+                    let multiplier = (desiredPosition.y < initialPosition.y) ? -1 : 1;
+                    let passedPosition: Position = {x: initialPosition.x, y: initialPosition.y + (i * multiplier)};
+                    if (samePosition(desiredPosition, passedPosition)){
+                        if (this.tileIsEmptyOrOccupiedByEnemy(passedPosition, boardState, team)){
+                            return true
+                        }                       
+                    } else {
+                        if (this.tileIsOccupied(passedPosition, boardState)){
+                            break;
+                        }
+                    } 
+                }
             } else if (initialPosition.y === desiredPosition.y){
-                if (desiredPosition.x < initialPosition.x){
-                    for (let i = 1; i < 8; i++){
-                        let passedPosition: Position = {x: initialPosition.x - i, y: initialPosition.y};
-                        if (samePosition(desiredPosition, passedPosition)){
-                            if (this.tileIsEmptyOrOccupiedByEnemy(passedPosition, boardState, team)){
-                                return true
-                            }                       
-                        } else {
-                            if (this.tileIsOccupied(passedPosition, boardState)){
-                                break;
-                            }
-                        }  
-                    }
-                } else if (desiredPosition.x > initialPosition.x){
-                    for (let i = 1; i < 8; i++){
-                        let passedPosition: Position = {x: initialPosition.x + i, y: initialPosition.y};
-                        if (samePosition(desiredPosition, passedPosition)){
-                            if (this.tileIsEmptyOrOccupiedByEnemy(passedPosition, boardState, team)){
-                                return true
-                            }                       
-                        } else {
-                            if (this.tileIsOccupied(passedPosition, boardState)){
-                                break;
-                            }
-                        }  
-                    }
-                } 
+                for (let i = 1; i < 8; i++){
+                    let multiplier = (desiredPosition.x < initialPosition.x) ? -1 : 1;
+                    let passedPosition: Position = {x: initialPosition.x  + (i * multiplier), y: initialPosition.y};
+                    if (samePosition(desiredPosition, passedPosition)){
+                        if (this.tileIsEmptyOrOccupiedByEnemy(passedPosition, boardState, team)){
+                            return true
+                        }                       
+                    } else {
+                        if (this.tileIsOccupied(passedPosition, boardState)){
+                            break;
+                        }
+                    } 
+                }
             }
         }
         return false;
