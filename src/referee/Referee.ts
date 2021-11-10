@@ -62,6 +62,16 @@ export default class Referee {
         return false
     }
 
+    knightMove (initialPosition: Position, desiredPosition: Position, team: TeamType, boardState: Piece[]): boolean{
+        if ((Math.abs(desiredPosition.x - initialPosition.x) === 2 && Math.abs(desiredPosition.y - initialPosition.y) === 1) 
+        || (Math.abs(desiredPosition.x - initialPosition.x) === 1 && Math.abs(desiredPosition.y - initialPosition.y) === 2)){
+            if (this.tileIsEmptyOrOccupiedByEnemy(desiredPosition, boardState, team)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     isValidMove(
         initialPosition: Position,
         desiredPosition: Position,
@@ -75,12 +85,7 @@ export default class Referee {
                 validMove = this.pawnMove(initialPosition, desiredPosition, team, boardState);
                 break;
             case PieceType.KNIGHT:
-                if ((Math.abs(desiredPosition.x - initialPosition.x) === 2 && Math.abs(desiredPosition.y - initialPosition.y) === 1) 
-                || (Math.abs(desiredPosition.x - initialPosition.x) === 1 && Math.abs(desiredPosition.y - initialPosition.y) === 2)){
-                    if (this.tileIsEmptyOrOccupiedByEnemy(desiredPosition, boardState, team)) {
-                        validMove = true;
-                    }
-                }
+                validMove = this.knightMove(initialPosition, desiredPosition, team, boardState);
                 break;
             case PieceType.BISHOP:
                 for (let i = 1; i < 8; i++){
