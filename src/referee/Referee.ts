@@ -37,6 +37,31 @@ export default class Referee {
         return false;
     }
 
+    pawnMove (initialPosition: Position, desiredPosition: Position, team: TeamType, boardState: Piece[]): boolean{
+        const specialRow = (team === TeamType.OUR) ? 1 : 6;
+        const pawnDirection = (team === TeamType.OUR) ? 1 : -1;
+
+        if (initialPosition.x === desiredPosition.x && initialPosition.y === specialRow && desiredPosition.y - initialPosition.y === 2 * pawnDirection){
+            if (!this.tileIsOccupied(desiredPosition, boardState) && !this.tileIsOccupied({x: desiredPosition.x, y: desiredPosition.y - pawnDirection}, boardState)){
+                return true
+            } 
+        } else if (initialPosition.x === desiredPosition.x && desiredPosition.y - initialPosition.y === pawnDirection) {
+            if (!this.tileIsOccupied(desiredPosition, boardState)){
+                return true
+            }                 
+        }
+        else if (desiredPosition.x -initialPosition.x === -1 && desiredPosition.y - initialPosition.y === pawnDirection){
+            if (this.tileIsOccupiedByOpponent(desiredPosition, boardState, team)){
+                return true
+            }
+        } else if (desiredPosition.x - initialPosition.x === 1 && desiredPosition.y - initialPosition.y === pawnDirection){
+            if (this.tileIsOccupiedByOpponent(desiredPosition, boardState, team)){
+                return true
+            }
+        }
+        return false
+    }
+
     isValidMove(
         initialPosition: Position,
         desiredPosition: Position,
@@ -47,27 +72,7 @@ export default class Referee {
         let validMove = false;
         switch (type){
             case PieceType.PAWN:
-                const specialRow = (team === TeamType.OUR) ? 1 : 6;
-                const pawnDirection = (team === TeamType.OUR) ? 1 : -1;
-    
-                if (initialPosition.x === desiredPosition.x && initialPosition.y === specialRow && desiredPosition.y - initialPosition.y === 2 * pawnDirection){
-                    if (!this.tileIsOccupied(desiredPosition, boardState) && !this.tileIsOccupied({x: desiredPosition.x, y: desiredPosition.y - pawnDirection}, boardState)){
-                        validMove = true
-                    } 
-                } else if (initialPosition.x === desiredPosition.x && desiredPosition.y - initialPosition.y === pawnDirection) {
-                    if (!this.tileIsOccupied(desiredPosition, boardState)){
-                        validMove = true
-                    }                 
-                }
-                else if (desiredPosition.x -initialPosition.x === -1 && desiredPosition.y - initialPosition.y === pawnDirection){
-                    if (this.tileIsOccupiedByOpponent(desiredPosition, boardState, team)){
-                        validMove = true
-                    }
-                } else if (desiredPosition.x - initialPosition.x === 1 && desiredPosition.y - initialPosition.y === pawnDirection){
-                    if (this.tileIsOccupiedByOpponent(desiredPosition, boardState, team)){
-                        validMove = true
-                    }
-                }
+                validMove = this.pawnMove(initialPosition, desiredPosition, team, boardState);
                 break;
             case PieceType.KNIGHT:
                 if ((Math.abs(desiredPosition.x - initialPosition.x) === 2 && Math.abs(desiredPosition.y - initialPosition.y) === 1) 
