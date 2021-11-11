@@ -3,7 +3,6 @@ import { Piece, PieceType, Position, samePosition, TeamType } from "../Constans"
 export default class Referee {
     tileIsOccupied(desiredPosition: Position, boardState: Piece[]): boolean{
         const piece = boardState.find(p => samePosition(p.position, desiredPosition));
-        console.log("tileIsOccupied piece", piece)
         if (piece) return true;
         return false;
     }
