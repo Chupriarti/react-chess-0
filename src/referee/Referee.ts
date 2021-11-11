@@ -158,6 +158,27 @@ export default class Referee {
         return false;
     }
 
+    kingMove (initialPosition: Position, desiredPosition: Position, team: TeamType, boardState: Piece[]): boolean{
+        for (let i = -1; i <= 1; i++){
+            for (let j = -1; j <= 1; j++){
+                if (i === 0 && j === 0) continue;
+                if (desiredPosition.x - initialPosition.x === i && desiredPosition.y - initialPosition.y === j){
+                    let passedPosition: Position = {x: desiredPosition.x, y: desiredPosition.y};
+                    if (samePosition(desiredPosition, passedPosition)){
+                        if (this.tileIsEmptyOrOccupiedByEnemy(passedPosition, boardState, team)){
+                            return true;
+                        }                       
+                    } else {
+                        if (this.tileIsOccupied(passedPosition, boardState)){
+                            break;
+                        }
+                    } 
+                }
+            }
+        }
+        return false;
+    }
+
     isValidMove(
         initialPosition: Position,
         desiredPosition: Position,
@@ -183,6 +204,9 @@ export default class Referee {
                 validMove = this.bishopMove(initialPosition, desiredPosition, team, boardState) 
                 || this.rookMove(initialPosition, desiredPosition, team, boardState);
                 break;
+                case PieceType.KING:
+                    validMove = this.kingMove(initialPosition, desiredPosition, team, boardState);
+                    break;
             default:
                 validMove = false;
         }
