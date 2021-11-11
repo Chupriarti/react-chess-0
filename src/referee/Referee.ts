@@ -159,7 +159,15 @@ export default class Referee {
     }
 
     kingMove (initialPosition: Position, desiredPosition: Position, team: TeamType, boardState: Piece[]): boolean{
-        if (desiredPosition.x - initialPosition.x === 1 && desiredPosition.y - initialPosition.y === 1){
+        if ((desiredPosition.x - initialPosition.x === 1 && desiredPosition.y - initialPosition.y === 1)
+            || (desiredPosition.x - initialPosition.x === 1 && desiredPosition.y - initialPosition.y === 0)
+            || (desiredPosition.x - initialPosition.x === 1 && desiredPosition.y - initialPosition.y === -1)
+            || (desiredPosition.x - initialPosition.x === -1 && desiredPosition.y - initialPosition.y === 1)
+            || (desiredPosition.x - initialPosition.x === -1 && desiredPosition.y - initialPosition.y === 0)
+            || (desiredPosition.x - initialPosition.x === -1 && desiredPosition.y - initialPosition.y === -1)
+            || (desiredPosition.x - initialPosition.x === 0 && desiredPosition.y - initialPosition.y === 1)
+            || (desiredPosition.x - initialPosition.x === 0 && desiredPosition.y - initialPosition.y === -1)
+        ){
             return true;
         }
         return false;
