@@ -180,6 +180,9 @@ export default class Referee {
             case PieceType.ROOK:
                 validMove = this.rookMove(initialPosition, desiredPosition, team, boardState);
                 break;
+            case PieceType.QUEEN:
+                validMove = true;
+                break;
             default:
                 validMove = false;
         }
