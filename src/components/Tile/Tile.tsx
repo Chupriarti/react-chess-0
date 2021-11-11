@@ -6,17 +6,10 @@ interface TileProps {
 }
 
 export default function Tile({number, image}: TileProps){
-    if (number % 2 === 0){
-        return (
-            <div className="tile black-tile">
-                {image && <div style={{backgroundImage: `url(${image})`}} className="chess-piece"></div>}
-            </div>
-        ) 
-    } else {
-        return (
-            <div className="tile white-tile">
-                {image && <div style={{backgroundImage: `url(${image})`}} className="chess-piece"></div>}
-            </div>
-        ) 
-    }
+    const tileClass = (number % 2 === 0) ? "tile black-tile" : "tile white-tile";
+    return (
+        <div className={tileClass}>
+            {image && <div style={{backgroundImage: `url(${image})`}} className="chess-piece"></div>}
+        </div>
+    ) 
 }
