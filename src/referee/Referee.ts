@@ -3,7 +3,6 @@ import { Piece, PieceType, Position, samePosition, TeamType } from "../Constans"
 export default class Referee {
     tileIsOccupied(desiredPosition: Position, boardState: Piece[]): boolean{
         const piece = boardState.find(p => samePosition(p.position, desiredPosition));
-        console.log("tileIsOccupied piece", piece)
         if (piece) return true;
         return false;
     }
@@ -179,6 +178,10 @@ export default class Referee {
                 break;
             case PieceType.ROOK:
                 validMove = this.rookMove(initialPosition, desiredPosition, team, boardState);
+                break;
+            case PieceType.QUEEN:
+                validMove = this.bishopMove(initialPosition, desiredPosition, team, boardState) 
+                || this.rookMove(initialPosition, desiredPosition, team, boardState);
                 break;
             default:
                 validMove = false;
