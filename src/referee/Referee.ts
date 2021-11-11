@@ -159,7 +159,10 @@ export default class Referee {
     }
 
     kingMove (initialPosition: Position, desiredPosition: Position, team: TeamType, boardState: Piece[]): boolean{
-        return true;
+        if (desiredPosition.x - initialPosition.x === 1 && desiredPosition.y - initialPosition.y === 1){
+            return true;
+        }
+        return false;
     }
 
     isValidMove(
