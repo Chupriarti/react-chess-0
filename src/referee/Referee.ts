@@ -163,7 +163,16 @@ export default class Referee {
             for (let j = -1; j <= 1; j++){
                 if (i === 0 && j === 0) continue;
                 if (desiredPosition.x - initialPosition.x === i && desiredPosition.y - initialPosition.y === j){
-                    return true;
+                    let passedPosition: Position = {x: desiredPosition.x, y: desiredPosition.y};
+                    if (samePosition(desiredPosition, passedPosition)){
+                        if (this.tileIsEmptyOrOccupiedByEnemy(passedPosition, boardState, team)){
+                            return true;
+                        }                       
+                    } else {
+                        if (this.tileIsOccupied(passedPosition, boardState)){
+                            break;
+                        }
+                    } 
                 }
             }
         }
