@@ -158,6 +158,10 @@ export default class Referee {
         return false;
     }
 
+    queenMove (initialPosition: Position, desiredPosition: Position, team: TeamType, boardState: Piece[]): boolean{
+        return this.bishopMove(initialPosition, desiredPosition, team, boardState) || this.rookMove(initialPosition, desiredPosition, team, boardState);
+    }
+
     kingMove (initialPosition: Position, desiredPosition: Position, team: TeamType, boardState: Piece[]): boolean{
         const opponentKing = boardState.find(p => p.type === PieceType.KING && p.team !== team);
         if (opponentKing){
@@ -212,8 +216,7 @@ export default class Referee {
                 validMove = this.rookMove(initialPosition, desiredPosition, team, boardState);
                 break;
             case PieceType.QUEEN:
-                validMove = this.bishopMove(initialPosition, desiredPosition, team, boardState) 
-                || this.rookMove(initialPosition, desiredPosition, team, boardState);
+                validMove = this.queenMove(initialPosition, desiredPosition, team, boardState);
                 break;
             case PieceType.KING:
                 validMove = this.kingMove(initialPosition, desiredPosition, team, boardState);
