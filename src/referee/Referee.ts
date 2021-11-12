@@ -160,8 +160,16 @@ export default class Referee {
 
     kingMove (initialPosition: Position, desiredPosition: Position, team: TeamType, boardState: Piece[]): boolean{
         const opponentKing = boardState.find(p => p.type === PieceType.KING && p.team !== team);
-        console.log("opponentKing", opponentKing)
-
+        if (opponentKing){
+            for (let i = -1; i <= 1; i++){
+                for (let j = -1; j <= 1; j++){
+                    if (desiredPosition.x === opponentKing.position.x + i && desiredPosition.y === opponentKing.position.y + j){
+                        return false;
+                    }
+                }
+            }
+        }
+        
         for (let i = -1; i <= 1; i++){
             for (let j = -1; j <= 1; j++){
                 if (i === 0 && j === 0) continue;
