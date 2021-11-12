@@ -34,6 +34,7 @@ export default function Chessboard(){
             const x = e.clientX - GRID_SIZE / 2;
             const y = e.clientY - GRID_SIZE / 2;
             activePiece.style.position = "absolute";
+            activePiece.style.zIndex = "1";    
 
             if (x < minX) {
                 activePiece.style.left = `${minX}px`;
@@ -111,7 +112,8 @@ export default function Chessboard(){
             }
             activePiece.style.position = "relative";
             activePiece.style.removeProperty("top");
-            activePiece.style.removeProperty("left");    
+            activePiece.style.removeProperty("left");
+            activePiece.style.zIndex = "0";    
             setActivePiece(null);
         }
     }
