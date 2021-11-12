@@ -36,6 +36,10 @@ export default class Referee {
         return false;
     }
 
+    getEnemyKing(boardState: Piece[], team: TeamType): Piece | undefined{
+        return boardState.find(p => p.type === PieceType.KING && p.team !== team);
+    }
+
     pawnMove (initialPosition: Position, desiredPosition: Position, team: TeamType, boardState: Piece[]): boolean{
         const specialRow = (team === TeamType.OUR) ? 1 : 6;
         const pawnDirection = (team === TeamType.OUR) ? 1 : -1;
@@ -159,7 +163,7 @@ export default class Referee {
     }
 
     queenMove (initialPosition: Position, desiredPosition: Position, team: TeamType, boardState: Piece[]): boolean{
-        const opponentKing = boardState.find(p => p.type === PieceType.KING && p.team !== team);
+        const opponentKing = this.getEnemyKing(boardState, team);
         if (opponentKing){
             if (samePosition(desiredPosition, opponentKing.position)){
                 return false;
@@ -169,7 +173,7 @@ export default class Referee {
     }
 
     kingMove (initialPosition: Position, desiredPosition: Position, team: TeamType, boardState: Piece[]): boolean{
-        const opponentKing = boardState.find(p => p.type === PieceType.KING && p.team !== team);
+        const opponentKing = this.getEnemyKing(boardState, team);
         if (opponentKing){
             for (let i = -1; i <= 1; i++){
                 for (let j = -1; j <= 1; j++){
