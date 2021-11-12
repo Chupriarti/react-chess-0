@@ -159,6 +159,12 @@ export default class Referee {
     }
 
     queenMove (initialPosition: Position, desiredPosition: Position, team: TeamType, boardState: Piece[]): boolean{
+        const opponentKing = boardState.find(p => p.type === PieceType.KING && p.team !== team);
+        if (opponentKing){
+            if (samePosition(desiredPosition, opponentKing.position)){
+                return false;
+            }
+        }
         return this.bishopMove(initialPosition, desiredPosition, team, boardState) || this.rookMove(initialPosition, desiredPosition, team, boardState);
     }
 
