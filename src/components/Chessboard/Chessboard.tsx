@@ -107,12 +107,11 @@ export default function Chessboard(){
                         return results;
                     }, [] as Piece[]);
                     setPieces(updatedPieces)
-                } else {
-                    activePiece.style.position = "relative";
-                    activePiece.style.removeProperty("top");
-                    activePiece.style.removeProperty("left");                    
                 }
             }
+            activePiece.style.position = "relative";
+            activePiece.style.removeProperty("top");
+            activePiece.style.removeProperty("left");    
             setActivePiece(null);
         }
     }
