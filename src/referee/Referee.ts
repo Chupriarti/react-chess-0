@@ -204,9 +204,9 @@ export default class Referee {
                 validMove = this.bishopMove(initialPosition, desiredPosition, team, boardState) 
                 || this.rookMove(initialPosition, desiredPosition, team, boardState);
                 break;
-                case PieceType.KING:
-                    validMove = this.kingMove(initialPosition, desiredPosition, team, boardState);
-                    break;
+            case PieceType.KING:
+                validMove = this.kingMove(initialPosition, desiredPosition, team, boardState);
+                break;
             default:
                 validMove = false;
         }
