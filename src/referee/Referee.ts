@@ -162,13 +162,17 @@ export default class Referee {
         return false;
     }
 
-    queenMove (initialPosition: Position, desiredPosition: Position, team: TeamType, boardState: Piece[]): boolean{
+    isEnemyKingHere(desiredPosition: Position, boardState: Piece[], team: TeamType){
         const opponentKing = this.getEnemyKing(boardState, team);
         if (opponentKing){
             if (samePosition(desiredPosition, opponentKing.position)){
-                return false;
+                return true;
             }
-        }
+        }        
+    }
+
+    queenMove (initialPosition: Position, desiredPosition: Position, team: TeamType, boardState: Piece[]): boolean{
+        if (this.isEnemyKingHere(desiredPosition, boardState, team)) return false;
         return this.bishopMove(initialPosition, desiredPosition, team, boardState) || this.rookMove(initialPosition, desiredPosition, team, boardState);
     }
 
