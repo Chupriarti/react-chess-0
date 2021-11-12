@@ -172,7 +172,6 @@ export default class Referee {
     }
 
     queenMove (initialPosition: Position, desiredPosition: Position, team: TeamType, boardState: Piece[]): boolean{
-        if (this.isEnemyKingHere(desiredPosition, boardState, team)) return false;
         return this.bishopMove(initialPosition, desiredPosition, team, boardState) || this.rookMove(initialPosition, desiredPosition, team, boardState);
     }
 
@@ -216,6 +215,7 @@ export default class Referee {
         boardState: Piece[]
     ): boolean{
         let validMove = false;
+        if (this.isEnemyKingHere(desiredPosition, boardState, team)) return false;
         switch (type){
             case PieceType.PAWN:
                 validMove = this.pawnMove(initialPosition, desiredPosition, team, boardState);
