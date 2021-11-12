@@ -36,6 +36,10 @@ export default class Referee {
         return false;
     }
 
+    getEnemyKing(boardState: Piece[], team: TeamType): Piece | undefined{
+        return boardState.find(p => p.type === PieceType.KING && p.team !== team);
+    }
+
     pawnMove (initialPosition: Position, desiredPosition: Position, team: TeamType, boardState: Piece[]): boolean{
         const specialRow = (team === TeamType.OUR) ? 1 : 6;
         const pawnDirection = (team === TeamType.OUR) ? 1 : -1;
@@ -158,7 +162,31 @@ export default class Referee {
         return false;
     }
 
+    isEnemyKingHere(desiredPosition: Position, boardState: Piece[], team: TeamType){
+        const opponentKing = this.getEnemyKing(boardState, team);
+        if (opponentKing){
+            if (samePosition(desiredPosition, opponentKing.position)){
+                return true;
+            }
+        }        
+    }
+
+    queenMove (initialPosition: Position, desiredPosition: Position, team: TeamType, boardState: Piece[]): boolean{
+        return this.bishopMove(initialPosition, desiredPosition, team, boardState) || this.rookMove(initialPosition, desiredPosition, team, boardState);
+    }
+
     kingMove (initialPosition: Position, desiredPosition: Position, team: TeamType, boardState: Piece[]): boolean{
+        const opponentKing = this.getEnemyKing(boardState, team);
+        if (opponentKing){
+            for (let i = -1; i <= 1; i++){
+                for (let j = -1; j <= 1; j++){
+                    if (desiredPosition.x === opponentKing.position.x + i && desiredPosition.y === opponentKing.position.y + j){
+                        return false;
+                    }
+                }
+            }
+        }
+        
         for (let i = -1; i <= 1; i++){
             for (let j = -1; j <= 1; j++){
                 if (i === 0 && j === 0) continue;
@@ -187,6 +215,7 @@ export default class Referee {
         boardState: Piece[]
     ): boolean{
         let validMove = false;
+        if (this.isEnemyKingHere(desiredPosition, boardState, team)) return false;
         switch (type){
             case PieceType.PAWN:
                 validMove = this.pawnMove(initialPosition, desiredPosition, team, boardState);
@@ -201,12 +230,11 @@ export default class Referee {
                 validMove = this.rookMove(initialPosition, desiredPosition, team, boardState);
                 break;
             case PieceType.QUEEN:
-                validMove = this.bishopMove(initialPosition, desiredPosition, team, boardState) 
-                || this.rookMove(initialPosition, desiredPosition, team, boardState);
+                validMove = this.queenMove(initialPosition, desiredPosition, team, boardState);
                 break;
-                case PieceType.KING:
-                    validMove = this.kingMove(initialPosition, desiredPosition, team, boardState);
-                    break;
+            case PieceType.KING:
+                validMove = this.kingMove(initialPosition, desiredPosition, team, boardState);
+                break;
             default:
                 validMove = false;
         }
