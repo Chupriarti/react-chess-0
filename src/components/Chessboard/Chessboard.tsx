@@ -8,6 +8,7 @@ export default function Chessboard(){
     const [activePiece, setActivePiece] = React.useState<HTMLElement | null>(null);
     const [grabPosition, setGrabPosition] = React.useState<Position>({x: -1, y: -1});
     const [pieces, setPieces] = React.useState<Piece[]>(initialBoardState);
+    const [currentPlayer, setCurrenPlayer] = React.useState<TeamType>(TeamType.OUR);
 
     const chessboardRef = React.useRef<HTMLDivElement>(null);
 
@@ -15,12 +16,17 @@ export default function Chessboard(){
 
     function grabPiece(e: React.MouseEvent){
         const chessboard = chessboardRef.current;
-        const element = e.target as HTMLElement;
-        if (element.classList.contains("chess-piece") && chessboard){
+        if (chessboard) {
+            const element = e.target as HTMLElement;
             const gridX = Math.floor((e.clientX - chessboard.offsetLeft) / GRID_SIZE);
             const gridY = Math.abs(Math.ceil((e.clientY - chessboard.offsetTop - 800) / GRID_SIZE));
-            setGrabPosition({x: gridX, y:gridY});
-            setActivePiece(element); 
+            const currentPiece = pieces.find(p => samePosition(p.position, {x: gridX, y: gridY}));
+            if (element.classList.contains("chess-piece") && currentPiece){
+                if (currentPiece.team === currentPlayer){
+                    setGrabPosition({x: gridX, y:gridY});
+                    setActivePiece(element); 
+                }
+            }
         }
     }
 
@@ -107,7 +113,8 @@ export default function Chessboard(){
                         }
                         return results;
                     }, [] as Piece[]);
-                    setPieces(updatedPieces)
+                    setPieces(updatedPieces);
+                    setCurrenPlayer(currentPiece.team === TeamType.OUR ? TeamType.OPPONENT : TeamType.OUR)
                 }
             }
             activePiece.style.position = "relative";
