@@ -105,10 +105,12 @@ export default function Chessboard(){
                 } else if (isValidMove){
                     const updatedPieces = pieces.reduce((results, piece) => {
                         if (samePosition(piece.position, grabPosition)){
-                            piece.enPassant = Math.abs(grabPosition.y - y) === 2 && piece.type === PieceType.PAWN;
-                            piece.position.x = x;
-                            piece.position.y = y;
-                            results.push(piece);
+                            const newPiece = {
+                                ...piece,
+                                position: {x, y},
+                                enPassant: Math.abs(grabPosition.y - y) === 2 && piece.type === PieceType.PAWN
+                            }
+                            results.push(newPiece);
                         } else if (!(samePosition(piece.position, {x, y}))){
                             if (piece.type === PieceType.PAWN){
                                 piece.enPassant = false;
@@ -117,8 +119,11 @@ export default function Chessboard(){
                         }
                         return results;
                     }, [] as Piece[]);
-                    setPieces(updatedPieces);
-                    setCurrenPlayer(nextPlayer(currentPiece));
+                    const isChecked = referee.isChecked(updatedPieces,  currentPiece.team);
+                    if (!isChecked){
+                        setPieces(updatedPieces);
+                        setCurrenPlayer(nextPlayer(currentPiece));
+                    }
                 }
             }
             activePiece.style.position = "relative";

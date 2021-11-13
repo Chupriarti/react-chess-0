@@ -207,15 +207,35 @@ export default class Referee {
         return false;
     }
 
+    isChecked(
+        boardState: Piece[],
+        team: TeamType       
+    ): boolean {
+        const ourKing = boardState.find(p => p.type === PieceType.KING && p.team === team);
+        const enemyTeam = team ===TeamType.OUR ? TeamType.OPPONENT : TeamType.OUR;
+        let isChecked = false;
+        if (ourKing){
+            boardState
+                .filter(p => p.team === enemyTeam)
+                .forEach(p => {
+                    if (this.isValidMove(p.position, ourKing.position, p.type, p.team, boardState, true)){
+                        isChecked = true;
+                    }
+                })
+        }
+        return isChecked
+    }
+
     isValidMove(
         initialPosition: Position,
         desiredPosition: Position,
         type: PieceType, 
         team: TeamType, 
-        boardState: Piece[]
+        boardState: Piece[],
+        canTakeKing?: boolean,
     ): boolean{
         let validMove = false;
-        if (this.isOpponentKingHere(desiredPosition, boardState, team)) return false;
+        if (!canTakeKing && this.isOpponentKingHere(desiredPosition, boardState, team)) return false;
         switch (type){
             case PieceType.PAWN:
                 validMove = this.pawnMove(initialPosition, desiredPosition, team, boardState);
@@ -238,6 +258,7 @@ export default class Referee {
             default:
                 validMove = false;
         }
+        //if (this.isChecked(boardState, team)) return false;
         return validMove;
     }
 }
