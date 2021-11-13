@@ -4,6 +4,10 @@ import './Chessboard.css';
 import Referee from '../../referee/Referee';
 import { HORIZONTAL_AXIS, initialBoardState, Piece, PieceType, Position, TeamType, VERTICAL_AXIS, GRID_SIZE, samePosition } from '../../Constans';
 
+const nextPlayer = (piece: Piece): TeamType => {
+    return piece.team === TeamType.OUR ? TeamType.OPPONENT : TeamType.OUR;
+}
+
 export default function Chessboard(){
     const [activePiece, setActivePiece] = React.useState<HTMLElement | null>(null);
     const [grabPosition, setGrabPosition] = React.useState<Position>({x: -1, y: -1});
@@ -114,7 +118,7 @@ export default function Chessboard(){
                         return results;
                     }, [] as Piece[]);
                     setPieces(updatedPieces);
-                    setCurrenPlayer(currentPiece.team === TeamType.OUR ? TeamType.OPPONENT : TeamType.OUR)
+                    setCurrenPlayer(nextPlayer(currentPiece));
                 }
             }
             activePiece.style.position = "relative";
