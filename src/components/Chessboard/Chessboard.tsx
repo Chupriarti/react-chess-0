@@ -4,10 +4,15 @@ import './Chessboard.css';
 import Referee from '../../referee/Referee';
 import { HORIZONTAL_AXIS, initialBoardState, Piece, PieceType, Position, TeamType, VERTICAL_AXIS, GRID_SIZE, samePosition } from '../../Constans';
 
+const nextPlayer = (piece: Piece): TeamType => {
+    return piece.team === TeamType.OUR ? TeamType.OPPONENT : TeamType.OUR;
+}
+
 export default function Chessboard(){
     const [activePiece, setActivePiece] = React.useState<HTMLElement | null>(null);
     const [grabPosition, setGrabPosition] = React.useState<Position>({x: -1, y: -1});
     const [pieces, setPieces] = React.useState<Piece[]>(initialBoardState);
+    const [currentPlayer, setCurrenPlayer] = React.useState<TeamType>(TeamType.OUR);
 
     const chessboardRef = React.useRef<HTMLDivElement>(null);
 
@@ -15,12 +20,17 @@ export default function Chessboard(){
 
     function grabPiece(e: React.MouseEvent){
         const chessboard = chessboardRef.current;
-        const element = e.target as HTMLElement;
-        if (element.classList.contains("chess-piece") && chessboard){
+        if (chessboard) {
+            const element = e.target as HTMLElement;
             const gridX = Math.floor((e.clientX - chessboard.offsetLeft) / GRID_SIZE);
             const gridY = Math.abs(Math.ceil((e.clientY - chessboard.offsetTop - 800) / GRID_SIZE));
-            setGrabPosition({x: gridX, y:gridY});
-            setActivePiece(element); 
+            const currentPiece = pieces.find(p => samePosition(p.position, {x: gridX, y: gridY}));
+            if (element.classList.contains("chess-piece") && currentPiece){
+                if (currentPiece.team === currentPlayer){
+                    setGrabPosition({x: gridX, y:gridY});
+                    setActivePiece(element); 
+                }
+            }
         }
     }
 
@@ -34,6 +44,7 @@ export default function Chessboard(){
             const x = e.clientX - GRID_SIZE / 2;
             const y = e.clientY - GRID_SIZE / 2;
             activePiece.style.position = "absolute";
+            activePiece.style.zIndex = "1";    
 
             if (x < minX) {
                 activePiece.style.left = `${minX}px`;
@@ -78,10 +89,12 @@ export default function Chessboard(){
                 if (inEnPassantMove){
                     const updatedPieces = pieces.reduce((results, piece) => {
                         if (samePosition(piece.position, grabPosition)){
-                            piece.enPassant = false;
-                            piece.position.x = x;
-                            piece.position.y = y;
-                            results.push(piece);
+                            const newPiece = {
+                                ...piece,
+                                position: {x, y},
+                                enPassant: Math.abs(grabPosition.y - y) === 2 && piece.type === PieceType.PAWN
+                            }
+                            results.push(newPiece);
                         } else if (!(samePosition(piece.position, {x, y: y - pawnDirection}))){
                             if (piece.type === PieceType.PAWN){
                                 piece.enPassant = false;
@@ -90,14 +103,20 @@ export default function Chessboard(){
                         }
                         return results
                     }, [] as Piece[]);
-                    setPieces(updatedPieces);
+                    const isChecked = referee.isChecked(updatedPieces,  currentPiece.team);
+                    if (!isChecked){
+                        setPieces(updatedPieces);
+                        setCurrenPlayer(nextPlayer(currentPiece));
+                    }
                 } else if (isValidMove){
                     const updatedPieces = pieces.reduce((results, piece) => {
                         if (samePosition(piece.position, grabPosition)){
-                            piece.enPassant = Math.abs(grabPosition.y - y) === 2 && piece.type === PieceType.PAWN;
-                            piece.position.x = x;
-                            piece.position.y = y;
-                            results.push(piece);
+                            const newPiece = {
+                                ...piece,
+                                position: {x, y},
+                                enPassant: Math.abs(grabPosition.y - y) === 2 && piece.type === PieceType.PAWN
+                            }
+                            results.push(newPiece);
                         } else if (!(samePosition(piece.position, {x, y}))){
                             if (piece.type === PieceType.PAWN){
                                 piece.enPassant = false;
@@ -106,13 +125,17 @@ export default function Chessboard(){
                         }
                         return results;
                     }, [] as Piece[]);
-                    setPieces(updatedPieces)
-                } else {
-                    activePiece.style.position = "relative";
-                    activePiece.style.removeProperty("top");
-                    activePiece.style.removeProperty("left");                    
+                    const isChecked = referee.isChecked(updatedPieces,  currentPiece.team);
+                    if (!isChecked){
+                        setPieces(updatedPieces);
+                        setCurrenPlayer(nextPlayer(currentPiece));
+                    }
                 }
             }
+            activePiece.style.position = "relative";
+            activePiece.style.removeProperty("top");
+            activePiece.style.removeProperty("left");
+            activePiece.style.zIndex = "0";    
             setActivePiece(null);
         }
     }
