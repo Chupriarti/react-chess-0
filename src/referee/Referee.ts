@@ -171,22 +171,26 @@ export default class Referee {
         }        
     }
 
-    queenMove (initialPosition: Position, desiredPosition: Position, team: TeamType, boardState: Piece[]): boolean{
-        return this.bishopMove(initialPosition, desiredPosition, team, boardState) || this.rookMove(initialPosition, desiredPosition, team, boardState);
-    }
-
-    kingMove (initialPosition: Position, desiredPosition: Position, team: TeamType, boardState: Piece[]): boolean{
+    isEnemyKingNear (desiredPosition: Position, boardState: Piece[], team: TeamType): boolean {
         const opponentKing = this.getOpponentKing(boardState, team);
         if (opponentKing){
             for (let i = -1; i <= 1; i++){
                 for (let j = -1; j <= 1; j++){
                     if (desiredPosition.x === opponentKing.position.x + i && desiredPosition.y === opponentKing.position.y + j){
-                        return false;
+                        return true;
                     }
                 }
             }
         }
-        
+        return false;
+    }
+
+    queenMove (initialPosition: Position, desiredPosition: Position, team: TeamType, boardState: Piece[]): boolean{
+        return this.bishopMove(initialPosition, desiredPosition, team, boardState) || this.rookMove(initialPosition, desiredPosition, team, boardState);
+    }
+
+    kingMove (initialPosition: Position, desiredPosition: Position, team: TeamType, boardState: Piece[]): boolean{
+        if (this.isEnemyKingNear(desiredPosition, boardState, team)) return false;
         for (let i = -1; i <= 1; i++){
             for (let j = -1; j <= 1; j++){
                 if (i === 0 && j === 0) continue;
