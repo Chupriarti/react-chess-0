@@ -23,8 +23,8 @@ export enum PieceType {
 }
 
 export enum TeamType {
-    OPPONENT,
-    OUR
+    PLAYER2,
+    PLAYER1
 }
 
 export interface Piece {
@@ -41,9 +41,9 @@ export const initialBoardState: Piece[] = createInitialBoardState();
 function createInitialBoardState(): Piece[] {
     const initialBoardState = [];
     for (let p = 0; p < 2; p++){
-        const teamType = (p === 0) ? TeamType.OPPONENT : TeamType.OUR;
-        const type = (teamType === TeamType.OPPONENT) ? "b" : "w";
-        const y = (teamType === TeamType.OPPONENT) ? 7 : 0;
+        const teamType = (p === 0) ? TeamType.PLAYER2 : TeamType.PLAYER1;
+        const type = (teamType === TeamType.PLAYER2) ? "b" : "w";
+        const y = (teamType === TeamType.PLAYER2) ? 7 : 0;
         
         initialBoardState.push({
             image: `assets/images/rook_${type}.png`, 
@@ -127,7 +127,7 @@ function createInitialBoardState(): Piece[] {
                 y: 6
             },
             type: PieceType.PAWN, 
-            team: TeamType.OPPONENT
+            team: TeamType.PLAYER2
         })
     }
     
@@ -139,7 +139,7 @@ function createInitialBoardState(): Piece[] {
                 y: 1
             },
             type: PieceType.PAWN, 
-            team: TeamType.OUR
+            team: TeamType.PLAYER1
         })
     }
     return initialBoardState;

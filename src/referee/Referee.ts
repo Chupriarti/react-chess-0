@@ -24,7 +24,7 @@ export default class Referee {
         team: TeamType, 
         boardState: Piece[]
     ){
-        const pawnDirection = team === TeamType.OUR ? 1 : -1;
+        const pawnDirection = team === TeamType.PLAYER1 ? 1 : -1;
         if (type === PieceType.PAWN){
             if ((desiredPosition.x - initialPosition.x === -1 || desiredPosition.x - initialPosition.x === 1) && desiredPosition.y - initialPosition.y === pawnDirection){
                 const piece = boardState.find(p => p.position.x === desiredPosition.x && p.position.y === desiredPosition.y - pawnDirection && p.enPassant);
@@ -41,8 +41,8 @@ export default class Referee {
     }
 
     pawnMove (initialPosition: Position, desiredPosition: Position, team: TeamType, boardState: Piece[]): boolean{
-        const specialRow = (team === TeamType.OUR) ? 1 : 6;
-        const pawnDirection = (team === TeamType.OUR) ? 1 : -1;
+        const specialRow = (team === TeamType.PLAYER1) ? 1 : 6;
+        const pawnDirection = (team === TeamType.PLAYER1) ? 1 : -1;
 
         if (initialPosition.x === desiredPosition.x && initialPosition.y === specialRow && desiredPosition.y - initialPosition.y === 2 * pawnDirection){
             if (!this.tileIsOccupied(desiredPosition, boardState) && !this.tileIsOccupied({x: desiredPosition.x, y: desiredPosition.y - pawnDirection}, boardState)){
@@ -216,7 +216,7 @@ export default class Referee {
         team: TeamType       
     ): boolean {
         const ourKing = boardState.find(p => p.type === PieceType.KING && p.team === team);
-        const enemyTeam = team ===TeamType.OUR ? TeamType.OPPONENT : TeamType.OUR;
+        const enemyTeam = team ===TeamType.PLAYER1 ? TeamType.PLAYER2 : TeamType.PLAYER1;
         let isChecked = false;
         if (ourKing){
             boardState
