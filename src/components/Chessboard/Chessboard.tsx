@@ -147,7 +147,8 @@ export default function Chessboard(){
             const number = j + i + 2;
             const piece = pieces.find(p => samePosition(p.position, {x: i,y: j}));
             let image = piece ? piece.image : undefined;
-            board.push(<Tile key={`${j},${i}`} number={number} image={image} />);
+            const check = piece?.type === PieceType.KING && piece.team === currentPlayer  ? referee.isChecked(pieces, currentPlayer) : undefined;
+            board.push(<Tile key={`${j},${i}`} number={number} image={image} check={check}/>);
         }
     }
 
