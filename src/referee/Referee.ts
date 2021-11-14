@@ -7,14 +7,14 @@ export default class Referee {
         return false;
     }
 
-    tileIsOccupiedByOpponent(desiredPosition: Position, boardState: Piece[], team: TeamType): boolean{
+    tileIsOccupiedByEnemy(desiredPosition: Position, boardState: Piece[], team: TeamType): boolean{
         const piece = boardState.find(p => samePosition(p.position, desiredPosition) && p.team !== team);
         if (piece) return true
         return false;
     }
 
     tileIsEmptyOrOccupiedByEnemy (desiredPosition: Position, boardState: Piece[], team: TeamType): boolean {
-        return this.tileIsOccupiedByOpponent(desiredPosition, boardState, team) || !this.tileIsOccupied(desiredPosition, boardState);
+        return this.tileIsOccupiedByEnemy(desiredPosition, boardState, team) || !this.tileIsOccupied(desiredPosition, boardState);
     }
 
     isEnPassantMove(
@@ -36,7 +36,7 @@ export default class Referee {
         return false;
     }
 
-    getOpponentKing(boardState: Piece[], team: TeamType): Piece | undefined{
+    getEnemyKing(boardState: Piece[], team: TeamType): Piece | undefined{
         return boardState.find(p => p.type === PieceType.KING && p.team !== team);
     }
 
@@ -54,11 +54,11 @@ export default class Referee {
             }                 
         }
         else if (desiredPosition.x -initialPosition.x === -1 && desiredPosition.y - initialPosition.y === pawnDirection){
-            if (this.tileIsOccupiedByOpponent(desiredPosition, boardState, team)){
+            if (this.tileIsOccupiedByEnemy(desiredPosition, boardState, team)){
                 return true
             }
         } else if (desiredPosition.x - initialPosition.x === 1 && desiredPosition.y - initialPosition.y === pawnDirection){
-            if (this.tileIsOccupiedByOpponent(desiredPosition, boardState, team)){
+            if (this.tileIsOccupiedByEnemy(desiredPosition, boardState, team)){
                 return true
             }
         }
@@ -162,21 +162,21 @@ export default class Referee {
         return false;
     }
 
-    isOpponentKingHere(desiredPosition: Position, boardState: Piece[], team: TeamType){
-        const opponentKing = this.getOpponentKing(boardState, team);
-        if (opponentKing){
-            if (samePosition(desiredPosition, opponentKing.position)){
+    isEnemyKingHere(desiredPosition: Position, boardState: Piece[], team: TeamType){
+        const enemyKing = this.getEnemyKing(boardState, team);
+        if (enemyKing){
+            if (samePosition(desiredPosition, enemyKing.position)){
                 return true;
             }
         }        
     }
 
     isEnemyKingNear (desiredPosition: Position, boardState: Piece[], team: TeamType): boolean {
-        const opponentKing = this.getOpponentKing(boardState, team);
-        if (opponentKing){
+        const enemyKing = this.getEnemyKing(boardState, team);
+        if (enemyKing){
             for (let i = -1; i <= 1; i++){
                 for (let j = -1; j <= 1; j++){
-                    if (desiredPosition.x === opponentKing.position.x + i && desiredPosition.y === opponentKing.position.y + j){
+                    if (desiredPosition.x === enemyKing.position.x + i && desiredPosition.y === enemyKing.position.y + j){
                         return true;
                     }
                 }
@@ -239,7 +239,7 @@ export default class Referee {
         canTakeKing?: boolean,
     ): boolean{
         let validMove = false;
-        if (!canTakeKing && this.isOpponentKingHere(desiredPosition, boardState, team)) return false;
+        if (!canTakeKing && this.isEnemyKingHere(desiredPosition, boardState, team)) return false;
         switch (type){
             case PieceType.PAWN:
                 validMove = this.pawnMove(initialPosition, desiredPosition, team, boardState);
@@ -262,7 +262,6 @@ export default class Referee {
             default:
                 validMove = false;
         }
-        //if (this.isChecked(boardState, team)) return false;
         return validMove;
     }
 }
