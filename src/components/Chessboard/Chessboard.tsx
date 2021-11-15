@@ -5,14 +5,21 @@ import Referee from '../../referee/Referee';
 import { HORIZONTAL_AXIS, initialBoardState, Piece, PieceType, Position, TeamType, VERTICAL_AXIS, GRID_SIZE, samePosition } from '../../Constans';
 
 const nextPlayer = (piece: Piece): TeamType => {
-    return piece.team === TeamType.OUR ? TeamType.OPPONENT : TeamType.OUR;
+    return piece.team === TeamType.PLAYER1 ? TeamType.PLAYER2 : TeamType.PLAYER1;
 }
 
 export default function Chessboard(){
     const [activePiece, setActivePiece] = React.useState<HTMLElement | null>(null);
     const [grabPosition, setGrabPosition] = React.useState<Position>({x: -1, y: -1});
     const [pieces, setPieces] = React.useState<Piece[]>(initialBoardState);
-    const [currentPlayer, setCurrenPlayer] = React.useState<TeamType>(TeamType.OUR);
+    const [currentPlayer, setCurrenPlayer] = React.useState<TeamType>(TeamType.PLAYER1);
+    const [gameOver, setGameOver] = React.useState(false);
+
+    React.useEffect(() => {
+        if (gameOver){
+            alert("Победа " + (currentPlayer === TeamType.PLAYER1 ? "черных" : "белых"))
+        }
+    }, [gameOver])
 
     const chessboardRef = React.useRef<HTMLDivElement>(null);
 
@@ -85,7 +92,7 @@ export default function Chessboard(){
                     currentPiece.team, 
                     pieces
                 );
-                const pawnDirection = currentPiece.team === TeamType.OUR ? 1 : -1;
+                const pawnDirection = currentPiece.team === TeamType.PLAYER1 ? 1 : -1;
                 if (inEnPassantMove){
                     const updatedPieces = pieces.reduce((results, piece) => {
                         if (samePosition(piece.position, grabPosition)){
@@ -128,6 +135,11 @@ export default function Chessboard(){
                     const isChecked = referee.isChecked(updatedPieces,  currentPiece.team);
                     if (!isChecked){
                         setPieces(updatedPieces);
+                        const isMated = referee.isMated(updatedPieces,  currentPiece.team);
+                        if (isMated){
+                            setGameOver(true)
+                            setCurrenPlayer(nextPlayer(currentPiece));
+                        } 
                         setCurrenPlayer(nextPlayer(currentPiece));
                     }
                 }
@@ -147,7 +159,8 @@ export default function Chessboard(){
             const number = j + i + 2;
             const piece = pieces.find(p => samePosition(p.position, {x: i,y: j}));
             let image = piece ? piece.image : undefined;
-            board.push(<Tile key={`${j},${i}`} number={number} image={image} />);
+            const check = piece?.type === PieceType.KING && piece.team === currentPlayer  ? referee.isChecked(pieces, currentPlayer) : undefined;
+            board.push(<Tile key={`${j},${i}`} number={number} image={image} check={check}/>);
         }
     }
 
