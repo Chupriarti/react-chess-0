@@ -242,13 +242,14 @@ export default class Referee {
                 if (enemyKing){
                     for (let i = -1; i <= 1; i++){
                         for (let j = -1; j <= 1; j++){
-                            if (enemyKing.position.x + i >= 8 || enemyKing.position.y + j >= 8) continue;
-                            if (this.isValidMove(enemyKing.position, {x: enemyKing.position.x + i, y: enemyKing.position.y + j}, enemyKing.type, enemyKing.team, boardState)){
+                            let newEnemyKingPostion: Position = {x: enemyKing.position.x + i, y: enemyKing.position.y + j};
+                            if (newEnemyKingPostion.x >= 8 || newEnemyKingPostion.y >= 8) continue;
+                            if (this.isValidMove(enemyKing.position, newEnemyKingPostion, enemyKing.type, enemyKing.team, boardState)){
                                 const updatedBoard = boardState.reduce((results, piece) => {
                                     if (piece.type === PieceType.KING && piece.team === enemyKing.team){
                                         results.push({
                                             ...piece,
-                                            position: {x: enemyKing.position.x + i, y: enemyKing.position.y + j}
+                                            position: newEnemyKingPostion
                                         })
                                     } else {
                                         results.push(piece)
