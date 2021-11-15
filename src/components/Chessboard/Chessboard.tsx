@@ -13,6 +13,13 @@ export default function Chessboard(){
     const [grabPosition, setGrabPosition] = React.useState<Position>({x: -1, y: -1});
     const [pieces, setPieces] = React.useState<Piece[]>(initialBoardState);
     const [currentPlayer, setCurrenPlayer] = React.useState<TeamType>(TeamType.PLAYER1);
+    const [gameOver, setGameOver] = React.useState(false);
+
+    React.useEffect(() => {
+        if (gameOver){
+            alert("Победа " + (currentPlayer === TeamType.PLAYER1 ? "черных" : "белых"))
+        }
+    }, [gameOver])
 
     const chessboardRef = React.useRef<HTMLDivElement>(null);
 
@@ -128,6 +135,11 @@ export default function Chessboard(){
                     const isChecked = referee.isChecked(updatedPieces,  currentPiece.team);
                     if (!isChecked){
                         setPieces(updatedPieces);
+                        const isMated = referee.isMated(updatedPieces,  currentPiece.team);
+                        if (isMated){
+                            setGameOver(true)
+                            setCurrenPlayer(nextPlayer(currentPiece));
+                        } 
                         setCurrenPlayer(nextPlayer(currentPiece));
                     }
                 }
