@@ -113,6 +113,11 @@ export default function Chessboard(){
                     const isChecked = referee.isChecked(updatedPieces,  currentPiece.team);
                     if (!isChecked){
                         setPieces(updatedPieces);
+                        const isMated = referee.isMated(updatedPieces,  currentPiece.team);
+                        if (isMated){
+                            setGameOver(true)
+                            setCurrenPlayer(nextPlayer(currentPiece));
+                        } 
                         setCurrenPlayer(nextPlayer(currentPiece));
                     }
                 } else if (isValidMove){
